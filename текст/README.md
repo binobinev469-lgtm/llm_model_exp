@@ -20,7 +20,7 @@ The requirements file pulls the CPU build of PyTorch, which is enough to train t
 python train.py --steps 500
 ```
 
-The default corpus is `data/sample.txt`. Point `--data` at any UTF-8 text file. The checkpoint lands in `checkpoints/model.pt`.
+The default corpus is `data/sample.txt`. Point `--data` at any UTF-8 text file. The last 10% of the file is held out. The loop logs train and validation loss, and `checkpoints/model.pt` is the step with the best validation loss.
 
 ## Generate
 
