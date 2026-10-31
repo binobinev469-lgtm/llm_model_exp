@@ -20,7 +20,7 @@ The requirements file pulls the CPU build of PyTorch, which is enough to train t
 python train.py --steps 500
 ```
 
-The default corpus is `data/sample.txt`. Point `--data` at any UTF-8 text file. The last 10% of the file is held out. The loop logs train and validation loss, and `checkpoints/model.pt` is the step with the best validation loss.
+The default corpus is `data/sample.txt`. Point `--data` at any UTF-8 text file. The last 10% of the file is held out and scored in full, so the checkpoint is the step with the best validation loss rather than a lucky batch. The learning rate warms up linearly, then follows a cosine down to `--min-lr`. Weight decay applies to matrices and skips layer-norm scales. `--seed` fixes the run.
 
 ## Generate
 
@@ -28,7 +28,7 @@ The default corpus is `data/sample.txt`. Point `--data` at any UTF-8 text file. 
 python generate.py --prompt "The transformer "
 ```
 
-`--temperature` and `--top-k` control how sharply the sampler picks the next character.
+`--temperature` and `--top-k` control how sharply the sampler picks the next character. `--temperature 0` is greedy: it always takes the most likely character.
 
 ## Layout
 

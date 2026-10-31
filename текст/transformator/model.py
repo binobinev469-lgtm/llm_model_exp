@@ -127,13 +127,17 @@ class GPT(nn.Module):
         for _ in range(max_new_tokens):
             idx_cond = idx[:, -self.config.block_size :]
             logits, _ = self(idx_cond)
-            logits = logits[:, -1, :] / max(temperature, 1e-8)
-            if top_k is not None:
-                k = min(top_k, logits.size(-1))
-                cutoff = torch.topk(logits, k).values[:, -1, None]
-                logits = logits.masked_fill(logits < cutoff, float("-inf"))
-            probs = F.softmax(logits, dim=-1)
-            next_id = torch.multinomial(probs, num_samples=1)
+            logits = logits[:, -1, :]
+            if temperature <= 0:
+                next_id = torch.argmax(logits, dim=-1, keepdim=True)
+            else:
+                logits = logits / temperature
+                if top_k is not None:
+                    k = min(top_k, logits.size(-1))
+                    cutoff = torch.topk(logits, k).values[:, [-1]]
+                    logits = logits.masked_fill(logits < cutoff, float("-inf"))
+                probs = F.softmax(logits, dim=-1)
+                next_id = torch.multinomial(probs, num_samples=1)
             idx = torch.cat((idx, next_id), dim=1)
         return idx
 
