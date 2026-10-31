@@ -1,0 +1,29 @@
+The transformer reads a sequence one token at a time and predicts what comes next.
+Each block mixes information with causal attention, then a small feed-forward network.
+Attention lets a word look back at earlier words, but never at words that have not been written yet.
+A residual path adds the block input back to its output, so the signal can skip layers.
+Layer norm keeps the numbers stable while the model trains.
+The same block is stacked many times. Depth is how the model builds longer patterns.
+A character model treats every letter, space, and mark as its own token.
+Given "The cat", the model should put more weight on letters that often follow that phrase.
+Training minimizes cross-entropy between the predicted distribution and the true next character.
+Adam updates the weights. Gradient clipping stops a single bad step from wrecking the run.
+Temperature scales the logits before sampling. Lower temperature makes the text more repetitive.
+Top-k sampling keeps only the most likely next characters and drops the long tail.
+A tiny model on a tiny file will not write essays. It will echo rhythms it has seen.
+The point of this project is the shape of the network: embeddings, blocks, a language-model head.
+Token embeddings store a vector for each character. Position embeddings mark where it sits.
+The language-model head turns the final vector into scores over the vocabulary.
+Those scores share weights with the token embeddings, so one table serves both jobs.
+To train, slide a window across the file and ask the model to continue each window.
+To generate, feed a prompt, sample one character, append it, and repeat.
+Replace data/sample.txt with any plain text file and train again.
+The transformer reads a sequence one token at a time and predicts what comes next.
+A river of tokens flows through the layers. Each layer rewrites the stream a little.
+Causal masks are triangles of allowed positions. The future stays hidden.
+Queries ask, keys offer, values carry the content that gets mixed.
+Many heads look at the same sequence with different questions.
+The feed-forward layer works on one position at a time and does not talk to its neighbors.
+Together, attention and the feed-forward layer are one transformer block.
+Stack the blocks, add a final norm, and you have a small language model.
+Start from a short prompt. Watch the loss fall. Read what the model invents.
