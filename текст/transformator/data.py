@@ -39,13 +39,21 @@ class CharDataset:
         return "".join(self.itos[int(i)] for i in ids)
 
     def get_batch(
-        self, batch_size: int, device: torch.device | str
+        self,
+        batch_size: int,
+        device: torch.device | str,
+        data: torch.Tensor | None = None,
     ) -> tuple[torch.Tensor, torch.Tensor]:
-        hi = len(self.data) - self.block_size - 1
+        source = self.data if data is None else data
+        hi = len(source) - self.block_size - 1
+        if hi <= 0:
+            raise ValueError(
+                f"split has {len(source)} tokens; need more than {self.block_size + 1}"
+            )
         starts = torch.randint(0, hi, (batch_size,))
-        x = torch.stack([self.data[i : i + self.block_size] for i in starts])
+        x = torch.stack([source[i : i + self.block_size] for i in starts])
         y = torch.stack(
-            [self.data[i + 1 : i + 1 + self.block_size] for i in starts]
+            [source[i + 1 : i + 1 + self.block_size] for i in starts]
         )
         return x.to(device), y.to(device)
 
